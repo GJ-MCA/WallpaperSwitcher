@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black_shade_2"
+    tools:context=".HomeFragment">
+
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/svSearch"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/background_search"
+        android:elevation="8dp"
+        app:iconifiedByDefault="false"
+        app:queryHint="Search Wallpapers" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvWallpapers"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/svSearch"
+        android:layout_marginBottom="5dp" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabPrev"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="75dp"
+        android:elevation="8dp"
+        android:src="@drawable/ic_arrow_prev" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabNext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="75dp"
+        android:elevation="8dp"
+        android:src="@drawable/ic_arrow_next" />
+
+</RelativeLayout>
