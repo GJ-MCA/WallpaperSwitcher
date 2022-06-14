@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.app.WallpaperManager;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -42,6 +43,7 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Objects;
 
 public class WallpaperFolderActivity extends AppCompatActivity {
     private RecyclerView rvTimeWallpapers;
@@ -156,19 +158,42 @@ public class WallpaperFolderActivity extends AppCompatActivity {
                 SimpleDateFormat sdf = new SimpleDateFormat("_yyyyMMdd_HHmmss");
                 String name = sdf.format(new Date());
 
+//                Uri imageCollection = null;
+//                ContentResolver resolver  =getContentResolver();
+//
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+//                    //imageCollection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY + File.separator + WALLPAPER_DIRECTORY + File.separator + Interval_DIRECTORY + File.separator);
+//                    imageCollection = Uri.parse("/storage/emulated/0/Pictures/" + WALLPAPER_DIRECTORY + File.separator + Interval_DIRECTORY + File.separator);
+//                    Log.d("PATH 11", String.valueOf(imageCollection));
+//                } else {
+//                    imageCollection = Uri.parse((Uri) MediaStore.Images.Media.EXTERNAL_CONTENT_URI + WALLPAPER_DIRECTORY + File.separator + Interval_DIRECTORY + File.separator);
+//                    Log.d("PATH 11", String.valueOf(imageCollection));
+//                }
+//
+//                ContentValues values = new ContentValues();
+//                values.put(MediaStore.Images.Media.DISPLAY_NAME, "WS" + name + i + ".jpg");
+//                values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+//
+//                Uri uri = resolver.insert(imageCollection, values);
+//
+//                OutputStream outputStream = resolver.openOutputStream(Objects.requireNonNull(uri));
+//                Bitmap bmp = newWallpaperList.get(i);
+//                bmp.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+//                Objects.requireNonNull(outputStream);
+
                 OutputStream imageOutStream;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
 
                     ContentValues values = new ContentValues();
                     values.put(MediaStore.Images.Media.DISPLAY_NAME, "WS" + name + i + ".jpg");
                     values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-                    values.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + WALLPAPER_DIRECTORY + File.separator + Interval_DIRECTORY + File.separator);
+                    values.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + File.separator + WALLPAPER_DIRECTORY + File.separator + Interval_DIRECTORY + File.separator);
 
                     Uri uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
                     imageOutStream = getContentResolver().openOutputStream(uri);
 
                 } else {
-                    String imagesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES + WALLPAPER_DIRECTORY + File.separator + Interval_DIRECTORY + File.separator).toString();
+                    String imagesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES + File.separator + WALLPAPER_DIRECTORY + File.separator + Interval_DIRECTORY + File.separator).toString();
                     File image = new File(imagesDir, "WS" + name + i + ".jpg");
                     imageOutStream = new FileOutputStream(image);
                 }
