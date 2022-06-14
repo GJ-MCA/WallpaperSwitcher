@@ -2,10 +2,10 @@ package com.vpn.wallpaperswitcher;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -13,16 +13,15 @@ import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.work.ExistingPeriodicWorkPolicy;
-import androidx.work.PeriodicWorkRequest;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
-import com.vpn.wallpaperswitcher.Services.MyService;
-import com.vpn.wallpaperswitcher.Services.MyWorker;
+import com.vpn.wallpaperswitcher.Services.IntervalWorker;
 
-import java.util.concurrent.TimeUnit;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class SettingsFragment extends Fragment implements View.OnClickListener {
 
@@ -30,8 +29,11 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     private Spinner spTime;
     private LinearLayout llFolder;
 
+    private int time;
     private String[] timeList = {"1 Minute", "2 Minutes", "3 Minutes", "4 Minutes", "5 Minutes"};
     private String TAG = "MainActivity";
+
+    OneTimeWorkRequest oneTimeWorkRequest;
 
     @Nullable
     @Override
@@ -53,6 +55,18 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         btnStopService.setOnClickListener(this);
         llFolder.setOnClickListener(this);
 
+        spTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                time = i+1;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
         return view;
     }
 
@@ -60,12 +74,14 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnStartService:
-                startServiceViaWorker();
-                startService();
+//                startServiceViaWorker();
+//                startService();
+                startInterval();
                 break;
 
             case R.id.btnStopService:
-                stopService();
+//                stopService();
+                stopInterval();
                 break;
 
             case R.id.llFolder:
@@ -75,53 +91,74 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    @Override
-    public void onDestroy() {
-        Log.d(TAG, "onDestroy called");
-        stopService();
-        super.onDestroy();
+    private void stopInterval() {
+        WorkManager.getInstance(getContext()).cancelAllWorkByTag("time");
     }
 
-    public void startService() {
-        Log.d(TAG, "startService called");
-        if (!MyService.isServiceRunning) {
-            Intent serviceIntent = new Intent(getContext(), MyService.class);
-            ContextCompat.startForegroundService(getContext(), serviceIntent);
-            //startService(serviceIntent);
-        }
-    }
+    private void startInterval() {
 
-    public void stopService() {
-        Log.d(TAG, "stopService called");
-        if (MyService.isServiceRunning) {
-            Intent serviceIntent = new Intent(getContext(), MyService.class);
-            getActivity().stopService(serviceIntent);
-        }
-    }
+        SimpleDateFormat sdf = new SimpleDateFormat("mm");
+        Data data = new Data.Builder()
+                .putInt("time_interval", time)
+                .putInt("minutes", Integer.parseInt(sdf.format(new Date())))
+                .build();
 
-    public void startServiceViaWorker() {
-        Log.d(TAG, "startServiceViaWorker called");
-        String UNIQUE_WORK_NAME = "StartMyServiceViaWorker";
-        //String WORKER_TAG = "MyServiceWorkerTag";
-        WorkManager workManager = WorkManager.getInstance(getContext());
+        oneTimeWorkRequest = new OneTimeWorkRequest.Builder(IntervalWorker.class)
+                .setInputData(data)
+                .addTag("time")
+                .build();
 
-        // As per Documentation: The minimum repeat interval that can be defined is 15 minutes (
-        // same as the JobScheduler API), but in practice 15 doesn't work. Using 16 here
-        PeriodicWorkRequest request =
-                new PeriodicWorkRequest.Builder(
-                        MyWorker.class,
-                        16,
-                        TimeUnit.MINUTES)
-                        //.addTag(WORKER_TAG)
-                        .build();
-        // below method will schedule a new work, each time app is opened
-        //workManager.enqueue(request);
-
-        // to schedule a unique work, no matter how many times app is opened i.e. startServiceViaWorker gets called
-        // https://developer.android.com/topic/libraries/architecture/workmanager/how-to/unique-work
-        // do check for AutoStart permission
-        workManager.enqueueUniquePeriodicWork(UNIQUE_WORK_NAME, ExistingPeriodicWorkPolicy.KEEP, request);
+        WorkManager.getInstance(getContext()).enqueue(oneTimeWorkRequest);
 
     }
+
+//    @Override
+//    public void onDestroy() {
+//        Log.d(TAG, "onDestroy called");
+//        //stopService();
+//        super.onDestroy();
+//    }
+//
+//    public void startService() {
+//        Log.d(TAG, "startService called");
+//        if (!MyService.isServiceRunning) {
+//            Intent serviceIntent = new Intent(getContext(), MyService.class);
+//            ContextCompat.startForegroundService(getContext(), serviceIntent);
+//            //startService(serviceIntent);
+//        }
+//    }
+//
+//    public void stopService() {
+//        Log.d(TAG, "stopService called");
+//        if (MyService.isServiceRunning) {
+//            Intent serviceIntent = new Intent(getContext(), MyService.class);
+//            getActivity().stopService(serviceIntent);
+//        }
+//    }
+//
+//    public void startServiceViaWorker() {
+//        Log.d(TAG, "startServiceViaWorker called");
+//        String UNIQUE_WORK_NAME = "StartMyServiceViaWorker";
+//        //String WORKER_TAG = "MyServiceWorkerTag";
+//        WorkManager workManager = WorkManager.getInstance(getContext());
+//
+//        // As per Documentation: The minimum repeat interval that can be defined is 15 minutes (
+//        // same as the JobScheduler API), but in practice 15 doesn't work. Using 16 here
+//        PeriodicWorkRequest request =
+//                new PeriodicWorkRequest.Builder(
+//                        MyWorker.class,
+//                        16,
+//                        TimeUnit.MINUTES)
+//                        //.addTag(WORKER_TAG)
+//                        .build();
+//        // below method will schedule a new work, each time app is opened
+//        //workManager.enqueue(request);
+//
+//        // to schedule a unique work, no matter how many times app is opened i.e. startServiceViaWorker gets called
+//        // https://developer.android.com/topic/libraries/architecture/workmanager/how-to/unique-work
+//        // do check for AutoStart permission
+//        workManager.enqueueUniquePeriodicWork(UNIQUE_WORK_NAME, ExistingPeriodicWorkPolicy.KEEP, request);
+//
+//    }
 
 }

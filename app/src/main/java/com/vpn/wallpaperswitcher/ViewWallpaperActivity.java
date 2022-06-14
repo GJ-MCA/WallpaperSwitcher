@@ -187,14 +187,14 @@ public class ViewWallpaperActivity extends AppCompatActivity {
             ContentValues values = new ContentValues();
             values.put(MediaStore.Images.Media.DISPLAY_NAME, "WS" + name + ".jpg");
             values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-            values.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Wallpaper Switcher/");
+            values.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + File.separator + WALLPAPER_DIRECTORY + File.separator);
 
             Uri uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
             imageOutStream = getContentResolver().openOutputStream(uri);
 
         } else {
-            String imagesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES + "/Wallpaper Switcher/").toString();
+            String imagesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES + File.separator + WALLPAPER_DIRECTORY + File.separator).toString();
             File image = new File(imagesDir, "WS" + name + ".jpg");
             imageOutStream = new FileOutputStream(image);
         }

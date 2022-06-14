@@ -1,6 +1,5 @@
 package com.vpn.wallpaperswitcher.Adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -14,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.vpn.wallpaperswitcher.R;
 
 import java.util.ArrayList;
@@ -64,7 +62,7 @@ public class WallpaparFolderAdapter extends RecyclerView.Adapter<WallpaparFolder
 
                 } else {
                     //code for simple on click event
-                    Toast.makeText(context, "hi", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context, "hi", Toast.LENGTH_SHORT).show();
 
                 }
             }
