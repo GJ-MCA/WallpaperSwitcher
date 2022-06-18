@@ -61,7 +61,7 @@ public class IntervalWorker extends Worker {
                     for (int j = 0; j < files.length; j++) {
                         Log.d(TAG, "File number [" + j + "] : " + files[j]);
                     }
-                    if (files != null && files.length > 0) {
+                    if (files.length > 0) {
                         Log.d(TAG, "Size: " + files.length);
                         //int randomFilePathIndex = getRandomInt(0, files.length - 1);
                         //File randomFile = files[randomFilePathIndex];
@@ -85,7 +85,7 @@ public class IntervalWorker extends Worker {
                             while (Integer.parseInt(sdf.format(new Date())) != total) {
                             }
                             total += interval;
-                            if (total > 59) {
+                            if (total >= 60) {
                                 total = 0;
                             }
                             //Thread.sleep(interval * 1000L);

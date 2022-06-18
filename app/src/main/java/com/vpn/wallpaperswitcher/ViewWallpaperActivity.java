@@ -56,7 +56,7 @@ public class ViewWallpaperActivity extends AppCompatActivity {
     WallpaperManager wallpaperManager;
     ProgressDialog dialog;
 
-    private String WALLPAPER_DIRECTORY = "wallpaper-switcher";
+    private final String WALLPAPER_DIRECTORY = "Wallpaper Switcher";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

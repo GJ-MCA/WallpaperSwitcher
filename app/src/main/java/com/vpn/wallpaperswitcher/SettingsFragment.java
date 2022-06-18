@@ -15,13 +15,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.work.Data;
+import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
 import com.vpn.wallpaperswitcher.Services.IntervalWorker;
 
+import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 public class SettingsFragment extends Fragment implements View.OnClickListener {
 
@@ -34,6 +39,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     private String TAG = "MainActivity";
 
     OneTimeWorkRequest oneTimeWorkRequest;
+    PeriodicWorkRequest periodicWorkRequest;
 
     @Nullable
     @Override
@@ -92,7 +98,10 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     }
 
     private void stopInterval() {
-        WorkManager.getInstance(getContext()).cancelAllWorkByTag("time");
+//        WorkManager.getInstance(getContext()).cancelAllWorkByTag("time");
+//        WorkManager.getInstance(getContext()).cancelWorkById(oneTimeWorkRequest.getId());
+        WorkManager.getInstance(getContext()).cancelAllWorkByTag("time1");
+        WorkManager.getInstance(getContext()).cancelWorkById(periodicWorkRequest.getId());
     }
 
     private void startInterval() {
@@ -108,8 +117,13 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 .addTag("time")
                 .build();
 
-        WorkManager.getInstance(getContext()).enqueue(oneTimeWorkRequest);
+        periodicWorkRequest = new PeriodicWorkRequest.Builder(IntervalWorker.class,15, TimeUnit.MINUTES)
+                .setInputData(data)
+                .addTag("time1")
+                .build();
 
+        WorkManager.getInstance(requireContext()).enqueue(oneTimeWorkRequest);
+        WorkManager.getInstance(requireContext()).enqueue(periodicWorkRequest);
     }
 
 //    @Override
