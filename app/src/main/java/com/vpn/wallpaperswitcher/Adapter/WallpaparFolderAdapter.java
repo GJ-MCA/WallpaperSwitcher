@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -46,7 +45,7 @@ public class WallpaparFolderAdapter extends RecyclerView.Adapter<WallpaparFolder
         holder.ivWallpaper.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isSelectedMode == true) {
+                if (isSelectedMode) {
 
                     if (selectedList.contains(wallpaperList.get(position))) {
                         holder.cvFolderWallpaper.setBackgroundColor(Color.TRANSPARENT);
@@ -58,7 +57,7 @@ public class WallpaparFolderAdapter extends RecyclerView.Adapter<WallpaparFolder
 
                     if (selectedList.size() == 0) {
                         isSelectedMode = false;
-                    }
+                   }
 
                 } else {
                     //code for simple on click event

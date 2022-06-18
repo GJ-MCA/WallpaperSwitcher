@@ -9,8 +9,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
-import android.app.WallpaperManager;
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -22,7 +20,6 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -43,7 +40,6 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Objects;
 
 public class WallpaperFolderActivity extends AppCompatActivity {
     private RecyclerView rvTimeWallpapers;
@@ -54,9 +50,9 @@ public class WallpaperFolderActivity extends AppCompatActivity {
     ArrayList<Bitmap> folderWallapaperList;
     ArrayList<Bitmap> newWallpaperList;
 
-    private String WALLPAPER_DIRECTORY = "Wallpaper Switcher";
-    private String Interval_DIRECTORY = "Wallpaper Interval";
-    private String TAG = "Wallpaper Folder";
+    private final String WALLPAPER_DIRECTORY = "Wallpaper Switcher";
+    private final String Interval_DIRECTORY = "Wallpaper Interval";
+    private final String TAG = "Wallpaper Folder";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -228,10 +224,10 @@ public class WallpaperFolderActivity extends AppCompatActivity {
         File wallpaperDirectory = new File(wallpaperDirectoryPath);
         //if folder dosen't exist it will create the folder
         if (wallpaperDirectory.exists()) {
-            tvNoWalls.setVisibility(View.GONE);
             try {
                 File[] files = wallpaperDirectory.listFiles();
                 if (files != null && files.length > 0) {
+                    tvNoWalls.setVisibility(View.GONE);
                     Log.d(TAG, "Size: " + files.length);
 
                     for (int i = 0; i < files.length; i++) {
