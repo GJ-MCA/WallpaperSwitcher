@@ -27,6 +27,7 @@ import java.util.Random;
 public class Util {
     private String TAG = "Util";
     private String WALLPAPER_DIRECTORY = "Wallpaper Switcher";
+    private String INTERVAL_DIRECTORY = "Wallpaper Interval";
 
     /**
      * @return integer in range [min, max]
@@ -69,10 +70,10 @@ public class Util {
         }
         String wallpaperDirectoryPath = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            wallpaperDirectoryPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES + File.separator + WALLPAPER_DIRECTORY + File.separator).toString();
+            wallpaperDirectoryPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES + File.separator + WALLPAPER_DIRECTORY + File.separator + INTERVAL_DIRECTORY + File.separator).toString();
             Log.d("PATH1", wallpaperDirectoryPath);
         } else {
-            wallpaperDirectoryPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES + File.separator + WALLPAPER_DIRECTORY + File.separator).toString();
+            wallpaperDirectoryPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES + File.separator + WALLPAPER_DIRECTORY + File.separator + INTERVAL_DIRECTORY + File.separator).toString();
             Log.d("PATH2", wallpaperDirectoryPath);
         }
 
@@ -95,7 +96,7 @@ public class Util {
                         WallpaperManager manager = WallpaperManager.getInstance(context);
                         manager.setBitmap(image);
                     } else {
-                        Log.d(TAG, "File size exceeds limit: " + maxFileSizeInKb);
+                        Log.d(TAG, "File size exceeds limit : " + fileSizeInKb);
                     }
                 } else {
                     Log.d(TAG, "Wallpaper directory is empty : " + wallpaperDirectoryPath);

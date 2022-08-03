@@ -70,7 +70,7 @@ public class MyService extends Service {
         Notification notification = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
                 .setContentTitle("Wallpaper Switch Service is Running")
                 .setContentText("Listening for Screen Off/On events")
-                .setSmallIcon(R.drawable.ic__wallpaper_notification)
+                .setSmallIcon(R.drawable.ic_launcher_1_foreground)
                 .setContentIntent(pendingIntent)
                 .setColor(getResources().getColor(R.color.teal_200))
                 .build();
