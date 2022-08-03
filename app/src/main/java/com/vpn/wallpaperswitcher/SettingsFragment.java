@@ -2,6 +2,7 @@ package com.vpn.wallpaperswitcher;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +15,16 @@ import android.widget.Spinner;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.work.Data;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
+import com.shashank.sony.fancytoastlib.FancyToast;
+import com.vpn.wallpaperswitcher.Services.IntervalManager;
 import com.vpn.wallpaperswitcher.Services.IntervalWorker;
 
 import java.sql.Time;
@@ -35,9 +40,11 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     private LinearLayout llFolder;
 
     private int time;
+    boolean isServiceRunning = false;
     private String[] timeList = {"1 Minute", "2 Minutes", "3 Minutes", "4 Minutes", "5 Minutes"};
     private String TAG = "MainActivity";
 
+    IntervalManager intervalManager;
     OneTimeWorkRequest oneTimeWorkRequest;
     PeriodicWorkRequest periodicWorkRequest;
 
@@ -55,6 +62,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_list_item_1, timeList);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         spTime.setAdapter(arrayAdapter);
+
+        time = 1;
 
         //button click events
         btnStartService.setOnClickListener(this);
@@ -98,32 +107,56 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     }
 
     private void stopInterval() {
-//        WorkManager.getInstance(getContext()).cancelAllWorkByTag("time");
-//        WorkManager.getInstance(getContext()).cancelWorkById(oneTimeWorkRequest.getId());
-        WorkManager.getInstance(getContext()).cancelAllWorkByTag("time1");
-        WorkManager.getInstance(getContext()).cancelWorkById(periodicWorkRequest.getId());
+////        WorkManager.getInstance(getContext()).cancelAllWorkByTag("time");
+////        WorkManager.getInstance(getContext()).cancelWorkById(oneTimeWorkRequest.getId());
+////        WorkManager.getInstance(getContext()).cancelAllWorkByTag("time1");
+//        WorkManager.getInstance(getContext()).cancelWorkById(periodicWorkRequest.getId());
+//        isServiceRunning = false;
+//        FancyToast.makeText(getContext(), "Service Stopped", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show();
+////        try {
+////            WorkManager.getInstance(getContext()).getWorkInfoByIdLiveData(periodicWorkRequest.getId()).observe(this, new Observer<WorkInfo>() {
+////                @Override
+////                public void onChanged(WorkInfo workInfo) {
+////                    Log.d("work status : ", String.valueOf(workInfo.getState()));
+////                    if (!workInfo.getState().equals("SUCCEEDED")) {
+////                        WorkManager.getInstance(getContext()).cancelWorkById(periodicWorkRequest.getId());
+////                        FancyToast.makeText(getContext(), "Service Stopped", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show();
+////                    }
+////                }
+////            });
+////        } catch (Exception e) {
+////            FancyToast.makeText(getContext(), "Service Stopped", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show();
+////        }
+        intervalManager.stopInterval();
     }
 
     private void startInterval() {
 
-        SimpleDateFormat sdf = new SimpleDateFormat("mm");
-        Data data = new Data.Builder()
-                .putInt("time_interval", time)
-                .putInt("minutes", Integer.parseInt(sdf.format(new Date())))
-                .build();
+//        isServiceRunning = true;
+//        SimpleDateFormat sdf = new SimpleDateFormat("mm");
+//        Data data = new Data.Builder()
+//                .putInt("time_interval", time)
+//                .putInt("minutes", Integer.parseInt(sdf.format(new Date())))
+//                .putBoolean("isServiceRunning", isServiceRunning)
+//                .build();
+//
+////        oneTimeWorkRequest = new OneTimeWorkRequest.Builder(IntervalWorker.class)
+////                .setInputData(data)
+////                .addTag("time")
+////                .build();
+//
+//        periodicWorkRequest = new PeriodicWorkRequest.Builder(IntervalWorker.class,16, TimeUnit.MINUTES)
+//                .setInputData(data)
+//                .addTag("time1")
+//                .build();
+//
+//        //WorkManager.getInstance(requireContext()).enqueue(oneTimeWorkRequest);
+//        WorkManager.getInstance(getContext()).enqueue(periodicWorkRequest);
+//        FancyToast.makeText(getContext(), "Service Started", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, false).show();
+        intervalManager = new IntervalManager(getContext(), time);
+        intervalManager.stopInterval();
+        intervalManager.startInterval();
 
-        oneTimeWorkRequest = new OneTimeWorkRequest.Builder(IntervalWorker.class)
-                .setInputData(data)
-                .addTag("time")
-                .build();
-
-        periodicWorkRequest = new PeriodicWorkRequest.Builder(IntervalWorker.class,15, TimeUnit.MINUTES)
-                .setInputData(data)
-                .addTag("time1")
-                .build();
-
-        WorkManager.getInstance(requireContext()).enqueue(oneTimeWorkRequest);
-        WorkManager.getInstance(requireContext()).enqueue(periodicWorkRequest);
     }
 
 //    @Override

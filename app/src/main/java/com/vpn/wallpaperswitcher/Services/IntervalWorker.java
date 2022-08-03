@@ -37,6 +37,7 @@ public class IntervalWorker extends Worker {
         SimpleDateFormat sdf = new SimpleDateFormat("mm");
         Data data = getInputData();
         int interval = data.getInt("time_interval", 1);
+        boolean isServiceRunning = data.getBoolean("isServiceRunning", false);
         int minutes = data.getInt("minutes", Integer.parseInt(sdf.format(new Date())));
         int total = interval + minutes;
         Log.d(TAG, "doWork : Time minutes : " + minutes);
@@ -45,6 +46,9 @@ public class IntervalWorker extends Worker {
 
         for (int i = 0; i >= 0; i++) {
 
+            if (!isServiceRunning) {
+                break;
+            }
             String wallpaperDirectoryPath = null;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 wallpaperDirectoryPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES + File.separator + WALLPAPER_DIRECTORY + File.separator + INTERVAL_DIRECTORY + File.separator).toString();
